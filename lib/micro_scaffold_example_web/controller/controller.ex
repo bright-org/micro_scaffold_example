@@ -65,10 +65,10 @@ defmodule MicroScaffoldExampleWeb.Controller do
   </html>
   """
 
-  def index(conn), do: AtomvmHttpServer.render(conn, @index_html)
+  def index(conn), do: Template.render(conn, @index_html)
 
   def index2(conn) do
-    items = AtomvmHttpServer.Items.list_items() |> Enum.map(fn item -> "<li>#{item.name}</li>" end)
+    items = MicroScaffoldExample.Items.list_items() |> Enum.map(fn item -> "<li>#{item.name}</li>" end)
     Template.render(conn, @index2_html, %{items: items})
   end
 

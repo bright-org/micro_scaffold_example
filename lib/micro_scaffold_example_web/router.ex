@@ -1,0 +1,23 @@
+defmodule MicroScaffoldExampleWeb.Router do
+  alias MicroPhoenix.Request
+
+  def route(%Request{method: :get, path: "/api/status"}) do
+    body = ~s({"status":"ok","vm":"AtomVM","version":"0.1.0"})
+    {:ok, 200, "application/json", body}
+  end
+
+  def route(%Request{method: :get} = req) do
+    case MicroScaffoldExampleWeb.Controller.get(req) do
+      {:ok, status, content_type, body} ->
+        {:ok, status, content_type, body}
+
+      :not_found ->
+        MicroPhoenix.Static.get_error_page(404)
+
+    end
+  end
+
+  def route(_request) do
+    MicroPhoenix.Static.get_error_page(405)
+  end
+end
