@@ -22,7 +22,7 @@ defmodule MicroScaffoldExample.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:micro_phoenix, path: "../micro_phoenix"},
+      {:micro_phoenix, git: "https://github.com/bright-org/micro_phoenix.git", branch: "main"},
       {:ecto_sqlite3, "~> 0.21"}
     ]
   end
