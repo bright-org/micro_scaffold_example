@@ -1,7 +1,6 @@
 defmodule MicroScaffoldExampleWeb.Controller do
 
-
-
+  @index3_url "http://localhost:8000/index3.html"
 
   @index_html """
   <!DOCTYPE html>
@@ -72,8 +71,28 @@ defmodule MicroScaffoldExampleWeb.Controller do
     Template.render(conn, @index2_html, %{items: items})
   end
 
+  def index3(conn) do
+    case Req.get(@index3_url, headers: [connection: "close"]) do
+      {:ok, %Req.Response{} = resp} ->
+        html =
+          case resp.body do
+            body when is_binary(body) -> body
+            body when is_list(body) -> IO.iodata_to_binary(body)
+            _ -> ""
+          end
 
+        Template.render(conn, html)
 
+      {:error, reason} ->
+        message =
+          case reason do
+            %_{} = e when is_exception(e) -> Exception.message(e)
+            other -> inspect(other)
+          end
+
+        {:ok, 502, "text/plain", message}
+    end
+  end
 
   def get(conn) when conn.path in ["/", "/index.html"] do
     index(conn)
@@ -81,6 +100,10 @@ defmodule MicroScaffoldExampleWeb.Controller do
 
   def get(conn) when conn.path in ["/index2.html"] do
     index2(conn)
+  end
+
+  def get(conn) when conn.path in ["/index3.html"] do
+    index3(conn)
   end
 
   def get(_conn), do: :not_found

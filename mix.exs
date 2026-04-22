@@ -23,7 +23,8 @@ defmodule MicroScaffoldExample.MixProject do
   defp deps do
     [
       {:micro_phoenix, git: "https://github.com/bright-org/micro_phoenix.git"},
-      {:ecto_sqlite3, "~> 0.21"}
+      {:ecto_sqlite3, "~> 0.21"},
+      {:req, git: "https://github.com/bright-org/req.git", override: true}
     ]
   end
 end
