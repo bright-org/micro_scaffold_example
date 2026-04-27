@@ -9,7 +9,11 @@ mix deps.get
 mix run --no-halt
 ```
 
-The server will start on http://localhost:8080/
+## Routes
+
+- `http://localhost:8080/` or `http://localhost:8080/index.html` — Returns a static HTML page defined as a constant in the controller. The page includes a button to call `GET /api/status`.
+- `http://localhost:8080/index2.html` — Fetches all records from the `items` table via mini_ecto and returns an HTML page listing each item name.
+- `http://localhost:8080/index3.html` — Proxies an external server via `Req.get/2` and returns the HTML response from `http://localhost:8000/index3.html`.
 
 ## Required permissions for Req/ExTCP
 
