@@ -39,6 +39,6 @@ sudo chown -R "$(id -un)":"$(id -gn)" _build
 Before starting the server, you can create 5 sample `Items.Item` records with:
 
 ```bash
-mix run -e "alias MicroScaffoldExample.Items; Enum.each(1..5, fn i -> Items.create_item(\"Sample Item #{i}\") end)"
+mix run -e "Enum.each([\"Apple\", \"Banana\", \"Cherry\", \"Date\", \"Elderberry\"], fn name -> MicroScaffoldExample.Items.create_item(name) end)"
 ```
 
