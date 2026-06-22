@@ -71,10 +71,6 @@ defmodule MicroScaffoldExampleWeb.Controller do
     Template.render(conn, @index2_html, %{items: items})
   end
 
-  def index2_empty(conn) do
-    Template.render(conn, @index2_html, %{items: ""})
-  end
-
   def index3(conn) do
     index3_upstream(conn)
   end

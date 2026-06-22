@@ -6,8 +6,8 @@ defmodule MicroScaffoldExample.AtomVM do
   AtomVM には `persistent_term` がないため、`MicroPhoenix.Registry` を使わず
   ルータ関数を直接参照する HTTP ループをここで回す。
 
-  DB や Req を使うパスは AtomVM 向けにここで分岐し、ホスト BEAM 用の
-  `Controller` / `Items` / `Repo` を呼ばない。
+  DB や Req を使うパスは AtomVM 向けにここで分岐する（`/index3.html` のみ）。
+  `/index2.html` は通常の Router → Controller → Items → Repo.AtomVM を通す。
   """
 
   alias MicroPhoenix.Request
@@ -34,6 +34,8 @@ defmodule MicroScaffoldExample.AtomVM do
   end
 
   defp handle_client(socket) do
+    MicroScaffoldExample.Repo.mark_atomvm_repo()
+
     case :gen_tcp.recv(socket, 0) do
       {:ok, data} ->
         response =
@@ -48,10 +50,6 @@ defmodule MicroScaffoldExample.AtomVM do
       {:error, _} ->
         :gen_tcp.close(socket)
     end
-  end
-
-  defp route(%Request{method: :get, path: "/index2.html"} = req) do
-    MicroScaffoldExampleWeb.Controller.index2_empty(req)
   end
 
   defp route(%Request{method: :get, path: "/index3.html"}) do
