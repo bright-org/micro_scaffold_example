@@ -5,9 +5,7 @@ defmodule MicroScaffoldExample.Application do
   def start(_type, _args) do
     MicroPhoenix.Registry.register_router(&MicroScaffoldExampleWeb.Router.route/1)
 
-    children = [
-      MicroScaffoldExample.Repo
-    ]
+    children = []
 
     Supervisor.start_link(children, strategy: :one_for_one, name: MicroScaffoldExample.Supervisor)
   end
