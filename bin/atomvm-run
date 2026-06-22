@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ATOMVM_DIR="${ATOMVM_INSTALL_PREFIX:-$ROOT/../AtomVM/build}"
+
+ATOMVM_BIN="$ATOMVM_DIR/src/AtomVM"
+ATOMVMLIB="$ATOMVM_DIR/libs/atomvmlib.avm"
+ESTDLIB="$ATOMVM_DIR/libs/estdlib/src/estdlib.avm"
+EXAVMLIB="$ATOMVM_DIR/libs/exavmlib/lib/exavmlib.avm"
+APP_AVM="$ROOT/micro_scaffold_example.avm"
+
+for path in "$ATOMVM_BIN" "$ATOMVMLIB" "$ESTDLIB" "$EXAVMLIB" "$APP_AVM"; do
+  if [[ ! -e "$path" ]]; then
+    echo "error: missing $path" >&2
+    echo "hint: run 'mix atomvm.packbeam' and set ATOMVM_INSTALL_PREFIX" >&2
+    exit 1
+  fi
+done
+
+cd "$ROOT"
+exec "$ATOMVM_BIN" "$APP_AVM" "$ATOMVMLIB" "$ESTDLIB" "$EXAVMLIB"
