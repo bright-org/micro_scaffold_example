@@ -19,6 +19,7 @@ defmodule MicroScaffoldExample.AtomVM do
       :gen_tcp.listen(@port, [:binary, {:active, false}, {:reuseaddr, true}, {:packet, :raw}])
 
     IO.puts("AtomVM HTTP Server listening on http://localhost:#{@port}/")
+    IO.puts("Seeded #{MicroScaffoldExample.Repo.AtomVM.seed_count()} items for /index2.html")
     accept_loop(sock)
   end
 

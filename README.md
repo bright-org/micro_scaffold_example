@@ -42,7 +42,7 @@ sudo chown -R "$(id -un)":"$(id -gn)" _build
 Before starting the server, you can create 5 sample `Items.Item` records with:
 
 ```bash
-mix run -e "Enum.each([\"Apple\", \"Banana\", \"Cherry\", \"Date\", \"Elderberry\"], fn name -> MicroScaffoldExample.Items.create_item(name) end)"
+mix run -e "Enum.each(MicroScaffoldExample.Seed.names(), fn name -> MicroScaffoldExample.Items.create_item(name) end)"
 ```
 
 Requires PostgreSQL and `psql`. See `config/config.exs` for connection settings.
@@ -63,8 +63,8 @@ mix atomvm.packbeam
 
 `bin/atomvm-run` loads stdlib AVMs (`atomvmlib`, `estdlib`, `exavmlib`) together with the app.
 
-On AtomVM, `/index2.html` returns an empty item list and `/index3.html` returns HTTP 503.
-Database and `Req` are host-only for now.
+On AtomVM, `/index2.html` lists 5 seeded items (compile-time, same names as host).
+`/index3.html` returns HTTP 503. Database and `Req` are host-only for now.
 
 ## Endpoints
 
@@ -72,6 +72,6 @@ Database and `Req` are host-only for now.
 |--------|------|-----------|--------|
 | GET | `/`, `/index.html` | Demo page | Demo page |
 | GET | `/api/status` | Status JSON | Status JSON |
-| GET | `/index2.html` | Items (PostgreSQL) | Empty list |
+| GET | `/index2.html` | Items (PostgreSQL) | 5 seeded items |
 | GET | `/index3.html` | Proxied via `Req` | HTTP 503 |
 

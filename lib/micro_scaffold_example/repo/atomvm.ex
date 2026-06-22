@@ -2,16 +2,12 @@ defmodule MicroScaffoldExample.Repo.AtomVM do
   @moduledoc """
   Read-only in-memory Repo for AtomVM.
 
-  AtomVM does not provide ETS (`tab2list`, etc.), `Process`, or `persistent_term`.
-  Items are seeded at compile time; CRUD mutators return success without persisting.
+  AtomVM does not provide ETS, `Process`, or `persistent_term`.
+  Items are seeded at compile time from `MicroScaffoldExample.Seed` (same names as host).
+  CRUD mutators return success without persisting.
   """
 
-  alias MicroScaffoldExample.Items.Item
-
-  @seed_names ~w(Apple Banana Cherry Date Elderberry)
-
-  @items Enum.with_index(@seed_names, 1)
-         |> Enum.map(fn {name, id} -> %Item{id: id, name: name} end)
+  @items MicroScaffoldExample.Seed.build_items()
 
   def all(_queryable, _opts \\ []), do: @items
 
@@ -39,4 +35,6 @@ defmodule MicroScaffoldExample.Repo.AtomVM do
   def delete(struct) do
     {:ok, struct}
   end
+
+  def seed_count, do: length(@items)
 end
