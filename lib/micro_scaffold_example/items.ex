@@ -1,11 +1,9 @@
-defmodule  MicroScaffoldExample.Items do
-  import Ecto.Query, warn: false
-
-  alias  MicroScaffoldExample.Items.Item
-  alias  MicroScaffoldExample.Repo
+defmodule MicroScaffoldExample.Items do
+  alias MicroScaffoldExample.Items.Item
+  alias MicroScaffoldExample.Repo
 
   def list_items do
-    Repo.all(from(i in Item, order_by: [asc: i.id]))
+    Repo.all(Item)
   end
 
   def create_item(name) when is_binary(name) do
@@ -14,8 +12,7 @@ defmodule  MicroScaffoldExample.Items do
 
   def create_item(attrs) when is_map(attrs) do
     %Item{}
-    |> Item.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(attrs)
   end
 
   def delete_item(id) when is_integer(id) do
