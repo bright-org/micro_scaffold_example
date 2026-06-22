@@ -72,6 +72,10 @@ defmodule MicroScaffoldExampleWeb.Controller do
   end
 
   def index3(conn) do
+    index3_upstream(conn)
+  end
+
+  defp index3_upstream(conn) do
     case Req.get(@index3_url, headers: [connection: "close"]) do
       {:ok, %Req.Response{} = resp} ->
         html =
