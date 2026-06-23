@@ -64,7 +64,19 @@ mix atomvm.packbeam
 `bin/atomvm-run` loads stdlib AVMs (`atomvmlib`, `estdlib`, `exavmlib`) together with the app.
 
 On AtomVM, `/index2.html` lists 5 seeded items (compile-time, same names as host).
-`/index3.html` returns HTTP 503. Database and `Req` are host-only for now.
+
+### `/index3.html` on AtomVM
+
+Proxies `http://localhost:8000/index3.html` via `Req.get`. On AtomVM, `Req` uses **`gen_tcp`** (not ExTCP raw sockets). Start an upstream HTTP server on port **8000** before testing:
+
+```bash
+# example upstream (separate terminal)
+python3 -m http.server 8000 --directory /path/with/index3.html
+```
+
+If upstream is down, `/index3.html` returns **HTTP 502**.
+
+Host BEAM still uses **ExTCP** and needs `cap_net_raw` (see above).
 
 ## Endpoints
 
@@ -73,5 +85,5 @@ On AtomVM, `/index2.html` lists 5 seeded items (compile-time, same names as host
 | GET | `/`, `/index.html` | Demo page | Demo page |
 | GET | `/api/status` | Status JSON | Status JSON |
 | GET | `/index2.html` | Items (PostgreSQL) | 5 seeded items |
-| GET | `/index3.html` | Proxied via `Req` | HTTP 503 |
+| GET | `/index3.html` | Proxied via `Req` (ExTCP) | Proxied via `Req` (gen_tcp) |
 
