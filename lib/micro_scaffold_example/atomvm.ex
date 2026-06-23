@@ -1,16 +1,13 @@
 defmodule MicroScaffoldExample.AtomVM do
   @moduledoc """
-  AtomVM 起動エントリポイント。
+  AtomVM entrypoint.
 
-  `mix.exs` の `atomvm: [start: MicroScaffoldExample.AtomVM]` から `start/0` が呼ばれる。
-  AtomVM には `persistent_term` がないため、`MicroPhoenix.Registry` を使わず
-  ルータ関数を直接参照する HTTP ループをここで回す。
+  `start/0` is invoked from `atomvm: [start: MicroScaffoldExample.AtomVM]` in `mix.exs`.
+  AtomVM has no `persistent_term`, so this module runs an HTTP loop that calls the router
+  function directly instead of using `MicroPhoenix.Registry`.
 
-  DB や Req を使うパスは AtomVM 向けにここで分岐する（`/index3.html` のみ）。
-  `/index2.html` は通常の Router → Controller → Items → Repo.AtomVM を通す。
+  DB paths branch to `Repo.AtomVM` on AtomVM.
   """
-
-  alias MicroPhoenix.Request
 
   @port 8080
 
@@ -51,10 +48,6 @@ defmodule MicroScaffoldExample.AtomVM do
       {:error, _} ->
         :gen_tcp.close(socket)
     end
-  end
-
-  defp route(%Request{method: :get, path: "/index3.html"}) do
-    {:ok, 503, "text/plain", "index3 is not available on AtomVM"}
   end
 
   defp route(req) do
