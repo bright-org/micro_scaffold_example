@@ -2,6 +2,7 @@ defmodule MicroScaffoldExample.Application do
   use Application
 
   def start do
+    MicroScaffoldExample.Repo.mark_atomvm_repo()
     register_router()
     MicroPhoenix.start()
   end
