@@ -9,7 +9,7 @@ defmodule MicroScaffoldExample.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       atomvm: [
-        start: MicroScaffoldExample.AtomVM
+        start: MicroScaffoldExample.Application
       ]
     ]
   end
@@ -25,9 +25,9 @@ defmodule MicroScaffoldExample.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:micro_phoenix, git: "https://github.com/bright-org/micro_phoenix.git"},
-      {:mini_ecto, git: "https://github.com/bright-org/mini-ecto"},
-      {:req, git: "https://github.com/bright-org/req.git", override: true},
+      {:micro_phoenix, path: "../micro_phoenix"},
+      {:mini_ecto, git: "git@github.com:bright-org/mini-ecto.git"},
+      {:req, git: "git@github.com:bright-org/req.git", override: true},
       {:exatomvm, git: "https://github.com/atomvm/ExAtomVM/"}
     ]
   end
