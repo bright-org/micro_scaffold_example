@@ -65,13 +65,49 @@ mix atomvm.packbeam
 
 On AtomVM, `/index2.html` lists 5 seeded items (compile-time, same names as host).
 
-### `/index3.html` on AtomVM
+### Host AtomVM smoke test
 
-Proxies `http://localhost:8000/index3.html` via `Req.get`. On AtomVM, `Req` uses **`gen_tcp`** (not ExTCP raw sockets). Start an upstream HTTP server on port **8000** before testing:
+Run a small AtomVM `eunit` smoke `.avm` on host AtomVM to exercise the AtomVM-compatible HTTP path without KR260 hardware:
 
 ```bash
-# example upstream (separate terminal)
-python3 -m http.server 8000 --directory /path/with/index3.html
+make -C packages/micro_scaffold_example host-atomvm-smoke
+```
+
+The smoke test executes:
+
+```text
+GET /
+GET /index2.html
+
+MicroPhoenix.Request.parse
+-> MicroPhoenix.Registry.fetch_router
+-> MicroScaffoldExampleWeb.Router.route
+-> MicroPhoenix.Response.build
+```
+
+`/index2.html` also exercises the scaffold item list and template rendering path with AtomVM's compile-time seed data. It is useful for catching AtomVM-incompatible Elixir constructs such as unsupported `String.*` or interpolation paths before trying the KR260 bare-metal build. It does not cover the bare-metal lwIP socket backend or PL Ethernet path.
+
+On AtomVM, `persistent_term` is not available. The smoke test may print:
+
+```text
+Unable to open persistent_term.beam
+Failed load module: persistent_term.beam
+```
+
+This is acceptable if the command also reports zero failures and prints:
+
+```text
+- 2 Tests 0 Failures 0 Ignored OK
+{micro_scaffold_host_atomvm_smoke,ok}
+```
+
+### `/index3.html` on AtomVM
+
+Proxies `http://192.168.1.17:8000/index3.html` via `Req.get`. On AtomVM, `Req` uses **`gen_tcp`** (not ExTCP raw sockets). Start an upstream HTTP server on the host PC/WSL side before testing:
+
+```bash
+# example upstream on host PC/WSL (separate terminal)
+python3 -m http.server 8000 --bind 0.0.0.0 --directory /path/with/index3.html
 ```
 
 If upstream is down, `/index3.html` returns **HTTP 502**.
@@ -86,4 +122,3 @@ Host BEAM still uses **ExTCP** and needs `cap_net_raw` (see above).
 | GET | `/api/status` | Status JSON | Status JSON |
 | GET | `/index2.html` | Items (PostgreSQL) | 5 seeded items |
 | GET | `/index3.html` | Proxied via `Req` (ExTCP) | Proxied via `Req` (gen_tcp) |
-

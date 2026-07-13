@@ -4,19 +4,30 @@ defmodule MicroScaffoldExample.Repo do
   """
 
   @atomvm_key :micro_scaffold_atomvm_repo
+  @configured_backend Application.compile_env(:micro_scaffold_example, :repo_backend, :process)
 
-  def all(queryable, opts \\ []), do: backend().all(queryable, opts)
-  def get(queryable, id, opts \\ []), do: backend().get(queryable, id, opts)
-  def get!(queryable, id, opts \\ []), do: backend().get!(queryable, id, opts)
-  def insert(struct, attrs), do: backend().insert(struct, attrs)
-  def update(struct, attrs \\ %{}), do: backend().update(struct, attrs)
-  def delete(struct), do: backend().delete(struct)
+  def all(queryable, opts \\ []), do: apply(backend(), :all, [queryable, opts])
+  def get(queryable, id, opts \\ []), do: apply(backend(), :get, [queryable, id, opts])
+  def get!(queryable, id, opts \\ []), do: apply(backend(), :get!, [queryable, id, opts])
+  def insert(struct, attrs), do: apply(backend(), :insert, [struct, attrs])
+  def update(struct, attrs \\ %{}), do: apply(backend(), :update, [struct, attrs])
+  def delete(struct), do: apply(backend(), :delete, [struct])
 
   def mark_atomvm_repo do
     :erlang.put(@atomvm_key, true)
   end
 
   defp backend do
+    case @configured_backend do
+      :process ->
+        process_backend()
+
+      backend ->
+        backend
+    end
+  end
+
+  defp process_backend do
     case :erlang.get(@atomvm_key) do
       true -> MicroScaffoldExample.Repo.AtomVM
       _ -> MicroScaffoldExample.Repo.Postgres
